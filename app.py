@@ -3,7 +3,7 @@ import os
 
 import aws_cdk as cdk
 
-from ecc_interview.ecc_interview_stack import EccInterviewStack
+from src.ecc_interview_stack import EccInterviewStack
 
 
 app = cdk.App()
