@@ -12,14 +12,14 @@ def handler(event, context):
     now = datetime.now(ZoneInfo('Europe/Lisbon'))
 
     days_since_saturday = (now.weekday() - 5) % 7
-    end_period = (now - timedelta(days=days_since_saturday)).replace(
+    start_period = (now - timedelta(days=days_since_saturday)).replace(
         hour=23, minute=0, second=0, microsecond=0
     )
     
-    if end_period > now:
-        end_period -= timedelta(days=7)
-        
-    start_period = end_period - timedelta(days=7)
+    if start_period > now:
+        start_period -= timedelta(days=7)
+
+    end_period = now
 
     total_items = 0
     scan_kwargs = {
@@ -31,7 +31,7 @@ def handler(event, context):
     }
 
     while True:
-        response = dynamodb.Table(os.environ['TABLE_NAME']).scan()
+        response = dynamodb.Table(os.environ['TABLE_NAME']).scan(**scan_kwargs)
         total_items += response.get('Count', 0)
         
         if 'LastEvaluatedKey' not in response:

@@ -8,6 +8,7 @@ from aws_cdk import (
     aws_scheduler_targets as _targets,
     aws_iam as _iam,
     RemovalPolicy,
+    Duration,
 )
 from aws_cdk.aws_scheduler import Schedule, ScheduleExpression, ScheduleTargetInput
 from constructs import Construct
@@ -101,6 +102,7 @@ class EccInterviewStack(Stack):
             handler = "handler.handler",
             role=report_role,
             code = _lambda.Code.from_asset("src/lambdas/report"),
+            timeout=Duration.minutes(5),
             environment={
                 "TABLE_NAME": table.table_name,
                 "BUCKET_NAME": bucket.bucket_name
@@ -127,9 +129,9 @@ class EccInterviewStack(Stack):
             schedule=ScheduleExpression.cron(
                 minute="0",
                 hour="23",
-                week_day="6",
+                week_day="7",
                 time_zone=TimeZone.EUROPE_LISBON
             ),
             target=target,
-            description="Trigger the report lambda every Saturday at 11 PM EST"
+            description="Trigger the report lambda every Saturday at 11 PM Europe/Lisbon"
         )
